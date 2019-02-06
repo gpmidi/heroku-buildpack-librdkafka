@@ -70,5 +70,5 @@ cp -a $PROFILE_PATH "$BUILD_DIR"/export
 rm -rf $CACHE_DIR
 
 mkdir -p "$BUILD_DIR"/vendor/librdkafka
-cp -R /app/vendor/librdkafka/ "$BUILD_DIR"/vendor/librdkafka
+cp -R /app/vendor/librdkafka/ "$BUILD_DIR"/vendor/
 ls -alh "$BUILD_DIR"/vendor/librdkafka
