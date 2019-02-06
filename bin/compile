@@ -74,4 +74,5 @@ export LIBRARY_PATH=$VENDOR_RUN_DIR/lib:\$LIBRARY_PATH
 export LD_LIBRARY_PATH=$VENDOR_RUN_DIR/lib:\$LD_LIBRARY_PATH
 export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig"
 
+ls -alhR $PKG_CONFIG_PATH
 ls -alh `pkg-config --cflags  -- rdkafka`
