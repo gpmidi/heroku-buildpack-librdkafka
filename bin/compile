@@ -66,7 +66,7 @@ export PKG_CONFIG_PATH="/app/vendor/librdkafka/lib/pkgconfig:$PKG_CONFIG_PATH"
 #export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig"
 EOF
 chmod 755 $PROFILE_PATH
-cp -a $PROFILE_PATH "$BUILD_DIR"/vendor/librdkafka/export
+cp -a $PROFILE_PATH "$BUILD_DIR"/export
 rm -rf $CACHE_DIR
 
 mkdir -p "$BUILD_DIR"/vendor/librdkafka
