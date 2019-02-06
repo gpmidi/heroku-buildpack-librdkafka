@@ -50,7 +50,7 @@ rm $LIBRDKAFKA_DIST_GZ
 cd $LIBRDKAFKA_DIST
 
 if [ ! -e Makefile.config ]; then
-   ./configure --prefix=${VENDOR_DIR}
+   ./configure --prefix=${VENDOR_DIR} --pkg-config-path=/usr/lib/pkgconfig
 fi
 make
 make install
@@ -60,7 +60,7 @@ cat > $PROFILE_PATH <<EOF
 export C_INCLUDE_PATH=$VENDOR_RUN_DIR/include:\$C_INCLUDE_PATH
 export LIBRARY_PATH=$VENDOR_RUN_DIR/lib:\$LIBRARY_PATH
 export LD_LIBRARY_PATH=$VENDOR_RUN_DIR/lib:\$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
+#export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
 EOF
 chmod 755 $PROFILE_PATH
 
@@ -69,4 +69,4 @@ rm -rf $CACHE_DIR
 export C_INCLUDE_PATH=$VENDOR_RUN_DIR/include:\$C_INCLUDE_PATH
 export LIBRARY_PATH=$VENDOR_RUN_DIR/lib:\$LIBRARY_PATH
 export LD_LIBRARY_PATH=$VENDOR_RUN_DIR/lib:\$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
+#export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
