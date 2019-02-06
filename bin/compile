@@ -51,28 +51,26 @@ cd $LIBRDKAFKA_DIST
 
 if [ ! -e Makefile.config ]; then
    #export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig"
-   ./configure --prefix=${VENDOR_DIR} --pkg-config-path=/usr/lib/pkgconfig
+   ./configure --prefix=/app/vendor/librdkafka
 fi
 make
 make install
 
 mkdir -p $(dirname $PROFILE_PATH)
 cat > $PROFILE_PATH <<EOF
-export C_INCLUDE_PATH=$VENDOR_RUN_DIR/include:\$C_INCLUDE_PATH
-export LIBRARY_PATH=$VENDOR_RUN_DIR/lib:\$LIBRARY_PATH
-export LD_LIBRARY_PATH=$VENDOR_RUN_DIR/lib:\$LD_LIBRARY_PATH
+export C_INCLUDE_PATH=/app/vendor/librdkafka//include:\$C_INCLUDE_PATH
+export LIBRARY_PATH=/app/vendor/librdkafka//lib:\$LIBRARY_PATH
+export LD_LIBRARY_PATH=/app/vendor/librdkafka//lib:\$LD_LIBRARY_PATH
 #export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig:$PKG_CONFIG_PATH"
 #export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig"
-export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig"
+#export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig"
 EOF
 chmod 755 $PROFILE_PATH
 
 rm -rf $CACHE_DIR
 
-export C_INCLUDE_PATH=$VENDOR_RUN_DIR/include:\$C_INCLUDE_PATH
-export LIBRARY_PATH=$VENDOR_RUN_DIR/lib:\$LIBRARY_PATH
-export LD_LIBRARY_PATH=$VENDOR_RUN_DIR/lib:\$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig"
+mkdir -p "$BUILD_DIR"/vendor/librdkafka
+cp -R /app/vendor/librdkafka/ "$BUILD_DIR"/vendor/librdkafka
 
 ls -alhR $PKG_CONFIG_PATH
 ls -alh `pkg-config --cflags  -- rdkafka`
