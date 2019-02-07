@@ -71,6 +71,7 @@ rm -rf $CACHE_DIR
 
 mkdir -p "$BUILD_DIR"/vendor/librdkafka
 cp -R /app/vendor/librdkafka/ "$BUILD_DIR"/vendor/
+cp -R /app/vendor/librdkafka/lib/pkgconfig/* /usr/lib/pkgconfig/
 ls -alh "$BUILD_DIR"/vendor/librdkafka 
 ls -alh "$BUILD_DIR"/vendor/librdkafka/lib/pkgconfig
 
