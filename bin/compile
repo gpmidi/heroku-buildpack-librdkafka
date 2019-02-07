@@ -72,4 +72,3 @@ rm -rf $CACHE_DIR
 
 mkdir -p "$BUILD_DIR"/vendor/librdkafka
 cp -R /app/vendor/librdkafka/ "$BUILD_DIR"/vendor/
-echo '/app/vendor/librdkafka/lib/pkgconfig:$PKG_CONFIG_PATH' > $ENV_DIR/PKG_CONFIG_PATH
