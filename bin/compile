@@ -50,6 +50,10 @@ rm $LIBRDKAFKA_DIST_GZ
 
 cd $LIBRDKAFKA_DIST
 
+if [ -e Makefile.config ]; then
+    make clean
+fi
+
 if [ ! -e Makefile.config ]; then
    #export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig"
    ./configure --prefix=/app/vendor/librdkafka
