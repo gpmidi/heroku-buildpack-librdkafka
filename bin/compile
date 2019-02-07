@@ -13,6 +13,7 @@ LIBRDKAFKA_SHASUM256=9c0afb8b53779d968225edf1e79da48a162895ad557900f75e7978f65e6
 
 BUILD_DIR=$1
 CACHE_DIR=$2
+ENV_DIR=$3
 
 # rely on heroku-buildpack-python to find our libs
 # # https://github.com/heroku/heroku-buildpack-python/blob/0b8741916676f70eb6537aa8da402fbdbe5292c7/bin/compile#L117
@@ -71,3 +72,5 @@ rm -rf $CACHE_DIR
 
 mkdir -p "$BUILD_DIR"/vendor/librdkafka
 cp -R /app/vendor/librdkafka/ "$BUILD_DIR"/vendor/
+echo "ENV_DIR"
+echo $ENV_DIR
