@@ -67,7 +67,7 @@ cat > $PROFILE_PATH <<EOF
 export C_INCLUDE_PATH=$BUILD_DIR/include:\$C_INCLUDE_PATH
 export LIBRARY_PATH=$BUILD_DIR/lib:\$LIBRARY_PATH
 export LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH="$BUILD_DIR/lib/pkgconfig:$PKG_CONFIG_PATH:/usr/lib/pkgconfig"
+#export PKG_CONFIG_PATH="$BUILD_DIR/lib/pkgconfig:$PKG_CONFIG_PATH:/usr/lib/pkgconfig"
 EOF
 chmod 755 $PROFILE_PATH
 cp -a $PROFILE_PATH "$BUILD_DIR"/export
