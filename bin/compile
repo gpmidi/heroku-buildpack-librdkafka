@@ -60,7 +60,7 @@ if [ ! -e Makefile.config ]; then
 fi
 make -s -j9
 make install -s
-rm ${OUT_PREFIX}/lib/*.a
+rm ${BUILD_DIR}/lib/*.a
 
 mkdir -p $(dirname $PROFILE_PATH)
 cat > $PROFILE_PATH <<EOF
