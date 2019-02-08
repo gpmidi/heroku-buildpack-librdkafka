@@ -1,88 +1,37 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# ## Usage
-#
-#     $ bin/compile <build-dir> <cache-dir> <env-dir>
-set -x
-set -eo pipefail
+# fail hard
+set -o pipefail
+# fail harder
+set -eu
 
-LIBRDKAFKA_VERSION=0.11.6
-LIBRDKAFKA_DIST=librdkafka-${LIBRDKAFKA_VERSION}
-LIBRDKAFKA_DIST_GZ=${LIBRDKAFKA_DIST}.tar.gz
-LIBRDKAFKA_SHASUM256=9c0afb8b53779d968225edf1e79da48a162895ad557900f75e7978f65e642032
+source $(dirname $BASH_SOURCE)/../_util/include/manifest.sh
 
-BUILD_DIR=$1
-CACHE_DIR=$2
-ENV_DIR=$3
-
-# rely on heroku-buildpack-python to find our libs
-# # https://github.com/heroku/heroku-buildpack-python/blob/0b8741916676f70eb6537aa8da402fbdbe5292c7/bin/compile#L117
-VENDOR_DIR=${BUILD_DIR}/.heroku/vendor
-VENDOR_RUN_DIR=${VENDOR_DIR/$BUILD_DIR//app}
-PROFILE_PATH=${BUILD_DIR}/.profile.d/librdkafka.sh
-
-if [ -z "${CACHE_DIR}" ]; then
-    echo invalid usage - missing cache dir
-    exit 1
-fi
-
-mkdir -p $CACHE_DIR
-cd $CACHE_DIR
-
-# remove old, pre-installed librdkafka during this build, it'll be there again once slug is deployed
-if [ -z "${KEEP_LIBRDKAFKA_DPKG}" ]; then
-   set +e
-   apt-get remove -y librdkafka-dev librdkafka1
-   set -e
-fi
-
-# download
-curl -Lo ${LIBRDKAFKA_DIST_GZ} https://github.com/edenhill/librdkafka/archive/v${LIBRDKAFKA_VERSION}.tar.gz
-
-# verify
-echo "${LIBRDKAFKA_SHASUM256}  ${LIBRDKAFKA_DIST_GZ}" | shasum -c -
-
-# extract
-tar zxf $LIBRDKAFKA_DIST_GZ
-
-# clean up
-rm $LIBRDKAFKA_DIST_GZ
-
-cd $LIBRDKAFKA_DIST
-
-if [ -e Makefile.config ]; then
-    make clean
-fi
-
-if [ ! -e Makefile.config ]; then
-   #export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig"
-   ./configure --prefix=$BUILD_DIR
-fi
-make -s -j9
-make install -s
-rm ${BUILD_DIR}/lib/*.a
-
-mkdir -p $(dirname $PROFILE_PATH)
-cat > $PROFILE_PATH <<EOF
-export C_INCLUDE_PATH=$BUILD_DIR/include:\$C_INCLUDE_PATH
-export LIBRARY_PATH=$BUILD_DIR/lib:\$LIBRARY_PATH
-export LD_LIBRARY_PATH=$BUILD_DIR/lib:\$LD_LIBRARY_PATH
-#export PKG_CONFIG_PATH="$BUILD_DIR/lib/pkgconfig:$PKG_CONFIG_PATH:/usr/lib/pkgconfig"
-EOF
-chmod 755 $PROFILE_PATH
-cp -a $PROFILE_PATH "$BUILD_DIR"/export
-rm -rf $CACHE_DIR
-
-#mkdir -p "$BUILD_DIR"/vendor/librdkafka
-#cp -R /app/vendor/librdkafka/ "$BUILD_DIR"/vendor/
+OUT_PREFIX=$1
 
 dep_formula=${0#$WORKSPACE_DIR/}
 dep_name=$(basename $BASH_SOURCE)
 dep_version=${dep_formula##*"/${dep_name}-"}
 dep_package=pkg-${dep_name}-${dep_version}
+dep_dirname=librdkafka-${dep_version}
+dep_archive_name=v${dep_version}.tar.gz
+dep_url=https://github.com/edenhill/librdkafka/archive/${dep_archive_name}
 dep_manifest=${dep_package}.composer.json
+
+# we need libsasl2-dev
+apt-get install -y libsasl2-dev || { echo "Failed to install libsasl2-dev; are you running this in a Docker build?"; exit 1; }
+
+echo "-----> Building ${dep_package}..."
+
+curl -L ${dep_url} | tar xz
+pushd ${dep_dirname}
+./configure --prefix=${OUT_PREFIX}
+make -s -j9
+make install -s
+rm ${OUT_PREFIX}/lib/*.a
+find ${OUT_PREFIX} -type f \( -executable -o -name '*.a' \) -exec sh -c "file -i '{}' | grep -Eq 'application/x-(archive|executable|sharedlib); charset=binary'" \; -print | xargs strip --strip-unneeded
+popd
 
 python $(dirname $BASH_SOURCE)/../_util/include/manifest.py "heroku-sys-package" "heroku-sys/pkg-${dep_name}" "$dep_version" "${dep_formula}.tar.gz" > $dep_manifest
 
 print_or_export_manifest_cmd "$(generate_manifest_cmd "$dep_manifest")"
-
