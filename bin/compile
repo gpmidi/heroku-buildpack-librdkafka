@@ -72,3 +72,5 @@ EOF
 chmod 755 $PROFILE_PATH
 cp -a $PROFILE_PATH "$BUILD_DIR"/export
 rm -rf $CACHE_DIR
+
+pkg-config --cflags  -- rdkafka
