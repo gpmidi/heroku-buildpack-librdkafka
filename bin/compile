@@ -56,7 +56,7 @@ fi
 
 if [ ! -e Makefile.config ]; then
    #export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig"
-   ./configure --prefix=/app/vendor/librdkafka
+   ./configure --prefix=$BUILD_DIR
 fi
 make -s -j9
 make install -s
@@ -71,8 +71,8 @@ export PKG_CONFIG_PATH="/app/vendor/librdkafka/lib/pkgconfig:$PKG_CONFIG_PATH:/u
 #export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig"
 EOF
 chmod 755 $PROFILE_PATH
-cp -a $PROFILE_PATH "$BUILD_DIR"/export
-rm -rf $CACHE_DIR
+#cp -a $PROFILE_PATH "$BUILD_DIR"/export
+#rm -rf $CACHE_DIR
 
-mkdir -p "$BUILD_DIR"/vendor/librdkafka
-cp -R /app/vendor/librdkafka/ "$BUILD_DIR"/vendor/
+#mkdir -p "$BUILD_DIR"/vendor/librdkafka
+#cp -R /app/vendor/librdkafka/ "$BUILD_DIR"/vendor/
