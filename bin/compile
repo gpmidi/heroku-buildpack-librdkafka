@@ -35,7 +35,7 @@ if [ -z "${KEEP_LIBRDKAFKA_DPKG}" ]; then
    apt-get remove -y librdkafka-dev librdkafka1
    set -e
 fi
-
+apt-get install -y libsasl2-dev 
 # download
 curl -Lo ${LIBRDKAFKA_DIST_GZ} https://github.com/edenhill/librdkafka/archive/v${LIBRDKAFKA_VERSION}.tar.gz
 
