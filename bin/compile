@@ -6,10 +6,6 @@
 set -x
 set -eo pipefail
 
-apt-get install -y librdkafka-dev librdkafka1
-exit 0
-
-
 LIBRDKAFKA_VERSION=0.11.6
 LIBRDKAFKA_DIST=librdkafka-${LIBRDKAFKA_VERSION}
 LIBRDKAFKA_DIST_GZ=${LIBRDKAFKA_DIST}.tar.gz
@@ -62,8 +58,8 @@ if [ ! -e Makefile.config ]; then
    #export PKG_CONFIG_PATH="$VENDOR_DIR/lib/pkgconfig"
    ./configure --prefix=/app/vendor/librdkafka
 fi
-make
-make install
+make -s -j9
+make install -s
 ldconfig
 mkdir -p $(dirname $PROFILE_PATH)
 cat > $PROFILE_PATH <<EOF
